@@ -71,12 +71,70 @@ body {
 }
 
 /* =========================================================
+   SELECTOR DE MODO
+========================================================= */
+
+.mode-selector {
+    display: flex;
+
+    gap: 8px;
+
+    padding: 10px 24px 0;
+
+    flex-shrink: 0;
+}
+
+.mode-button {
+    width: auto;
+
+    min-width: 150px;
+
+    padding: 9px 16px;
+
+    background: #e5e7eb;
+
+    color: #374151;
+
+    border-radius: 9px;
+
+    font-weight: bold;
+
+    font-size: 13px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.mode-button:hover {
+    transform: translateY(-1px);
+}
+
+.mode-button.active {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+/* =========================================================
+   SECCIONES DE MODO
+========================================================= */
+
+.mode-section {
+    display: none;
+}
+
+.mode-section.active {
+    display: grid;
+}
+
+/* =========================================================
    CONTENIDO
 ========================================================= */
 
 .content {
-    display: grid;
-
     grid-template-columns:
         minmax(0, 1fr)
         minmax(0, 1fr);
@@ -157,6 +215,31 @@ textarea {
 }
 
 /* =========================================================
+   SEPARADOR
+========================================================= */
+
+.separator {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    margin: 8px 0 10px;
+
+    color: #6b7280;
+
+    font-size: 12px;
+}
+
+.separator div {
+    height: 1px;
+
+    background: #d1d5db;
+
+    flex: 1;
+}
+
+/* =========================================================
    PREVIEW
 ========================================================= */
 
@@ -181,7 +264,7 @@ textarea {
 }
 
 /* =========================================================
-   BOTÓN
+   BOTONES
 ========================================================= */
 
 button {
@@ -212,7 +295,7 @@ button:disabled {
 }
 
 /* =========================================================
-   RESULTADO
+   RESULTADO DEL ANÁLISIS
 ========================================================= */
 
 .result {
@@ -297,6 +380,68 @@ button:disabled {
 }
 
 /* =========================================================
+   GENERADOR DE IMÁGENES
+========================================================= */
+
+.generate-help {
+    margin: 10px 0 0;
+
+    color: #6b7280;
+
+    font-size: 12px;
+
+    line-height: 1.4;
+}
+
+.generated-result {
+    flex: 1;
+
+    min-height: 0;
+
+    border-radius: 12px;
+
+    background: #0f172a;
+
+    padding: 14px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+}
+
+.generated-result p {
+    margin: 0;
+
+    color: #cbd5e1;
+
+    font-size: 14px;
+
+    text-align: center;
+
+    line-height: 1.4;
+}
+
+.generated-image {
+    display: none;
+
+    width: 100%;
+    height: 100%;
+
+    max-width: 100%;
+
+    object-fit: contain;
+
+    border-radius: 10px;
+}
+
+.generated-image[src] {
+    display: block;
+}
+
+/* =========================================================
    NOTA
 ========================================================= */
 
@@ -337,6 +482,10 @@ button:disabled {
         padding: 12px 16px;
     }
 
+    .mode-selector {
+        padding: 8px 16px 0;
+    }
+
     .panel {
         padding: 12px;
     }
@@ -367,8 +516,28 @@ button:disabled {
         border-radius: 0;
     }
 
-    .content {
+    .header {
+        padding: 12px 16px;
+    }
+
+    .mode-selector {
+        padding: 10px 12px 0;
+
+        display: grid;
+
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .mode-button {
+        width: 100%;
+
+        min-width: 0;
+    }
+
+    .content,
+    .mode-section.active {
         grid-template-columns: 1fr;
+
         padding: 12px;
     }
 
@@ -388,5 +557,14 @@ button:disabled {
     .result {
         min-height: 280px;
         max-height: none;
+    }
+
+    .generated-result {
+        min-height: 320px;
+    }
+
+    .generated-image {
+        height: auto;
+        max-height: 420px;
     }
 }

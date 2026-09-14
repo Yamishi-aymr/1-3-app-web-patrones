@@ -21,7 +21,7 @@
                 <h1>Analizador visual IA</h1>
 
                 <p>
-                    Identificación de patrones y objetos en imágenes
+                    Identificación de patrones, objetos y generación de imágenes con IA
                 </p>
             </div>
 
@@ -31,7 +31,38 @@
 
         </header>
 
-        <form id="analyzeForm" class="content">
+        <!-- =================================================
+             SELECTOR DE MODO
+        ================================================== -->
+
+        <div class="mode-selector">
+
+            <button
+                id="analyzeModeButton"
+                class="mode-button active"
+                type="button"
+            >
+                Analizar imagen
+            </button>
+
+            <button
+                id="generateModeButton"
+                class="mode-button"
+                type="button"
+            >
+                Generar imagen
+            </button>
+
+        </div>
+
+        <!-- =================================================
+             MODO ANALIZAR
+        ================================================== -->
+
+        <form
+            id="analyzeForm"
+            class="content mode-section active"
+        >
 
             <section class="panel">
 
@@ -49,28 +80,13 @@
 
                 </div>
 
-                <div style="
-                    display: flex;
-                    align-items: center;
-                    gap: 12px;
-                    margin: 18px 0;
-                    color: #6b7280;
-                    font-size: 13px;
-                ">
+                <div class="separator">
 
-                    <div style="
-                        height: 1px;
-                        background: #d1d5db;
-                        flex: 1;
-                    "></div>
+                    <div></div>
 
                     <span>O</span>
 
-                    <div style="
-                        height: 1px;
-                        background: #d1d5db;
-                        flex: 1;
-                    "></div>
+                    <div></div>
 
                 </div>
 
@@ -85,13 +101,6 @@
                         type="url"
                         placeholder="https://ejemplo.com/imagen.jpg"
                         autocomplete="off"
-                        style="
-                            width: 100%;
-                            padding: 12px;
-                            border: 1px solid #d1d5db;
-                            border-radius: 10px;
-                            background: #ffffff;
-                        "
                     >
 
                 </div>
@@ -143,21 +152,86 @@
 
         </form>
 
+        <!-- =================================================
+             MODO GENERAR
+        ================================================== -->
+
+        <section
+            id="generateSection"
+            class="content mode-section"
+        >
+
+            <section class="panel">
+
+                <div class="field">
+
+                    <label for="generatePrompt">
+                        Describe la imagen que quieres generar
+                    </label>
+
+                    <textarea
+                        id="generatePrompt"
+                        maxlength="1000"
+                        placeholder="Ejemplo: una ciudad futurista de noche con edificios de cristal, luces de neón y lluvia."
+                    ></textarea>
+
+                </div>
+
+                <button
+                    id="generateButton"
+                    type="button"
+                >
+                    Generar imagen
+                </button>
+
+                <p class="generate-help">
+                    Describe con el mayor detalle posible la escena, estilo, iluminación,
+                    colores, ambiente y objetos que quieras incluir.
+                </p>
+
+            </section>
+
+            <section class="panel">
+
+                <h2>
+                    Imagen generada
+                </h2>
+
+                <div
+                    id="generatedResult"
+                    class="generated-result"
+                >
+
+                    <p id="generatedMessage">
+                        Escribe una descripción y presiona “Generar imagen”.
+                    </p>
+
+                    <img
+                        id="generatedImage"
+                        class="generated-image"
+                        alt="Imagen generada por IA"
+                    >
+
+                </div>
+
+            </section>
+
+        </section>
+
         <p class="note">
             Usa imágenes sin información sensible.
-            Puedes subir una imagen desde tu dispositivo
-            o proporcionar una URL pública para que el modelo de IA
-            realice el análisis.
+            Puedes analizar imágenes propias o mediante URL,
+            y también generar imágenes nuevas a partir de una descripción.
         </p>
 
     </main>
 
-    <!-- Librería para interpretar Markdown -->
+    <!-- Markdown -->
     <script
         src="https://cdn.jsdelivr.net/npm/marked/marked.min.js">
     </script>
 
-    <!-- Limpia el HTML generado antes de mostrarlo -->
+    <!-- Sanitización -->
     <script
         src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js">
     </script>
