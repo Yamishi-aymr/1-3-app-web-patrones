@@ -198,29 +198,16 @@ fileInput.addEventListener("change", () => {
 INGRESAR IMAGEN POR URL
 ============================================================
 */
-
 imageUrlInput.addEventListener("input", () => {
 
-    const imageUrl =
-        imageUrlInput.value.trim();
-
-
-    /*
-    Si el usuario comienza a escribir una URL,
-    eliminamos cualquier archivo previamente seleccionado.
-    */
+    const imageUrl = imageUrlInput.value.trim();
 
     if (imageUrl) {
-
         fileInput.value = "";
-
         imageData = "";
-
     }
 
-
     if (!imageUrl) {
-
         preview.removeAttribute("src");
 
         result.textContent =
@@ -229,12 +216,9 @@ imageUrlInput.addEventListener("input", () => {
         updateAnalyzeButton();
 
         return;
-
     }
 
-
     if (!isValidImageUrl(imageUrl)) {
-
         preview.removeAttribute("src");
 
         result.textContent =
@@ -243,24 +227,16 @@ imageUrlInput.addEventListener("input", () => {
         updateAnalyzeButton();
 
         return;
-
     }
 
+    // Intentamos mostrar la vista previa
+    preview.src = imageUrl;
 
-    /*
-    Mostramos la URL como vista previa.
-    */
-
-    preview.src =
-        imageUrl;
-
-
+    // Pero el botón queda habilitado aunque la imagen no se renderice
     result.textContent =
-        "URL de imagen lista para analizar.";
+        "URL lista para analizar.";
 
-
-    updateAnalyzeButton();
-
+    analyzeButton.disabled = false;
 });
 
 
