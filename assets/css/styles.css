@@ -14,103 +14,68 @@ body {
     background: #f4f6f9;
     color: #1f2937;
 
-    /* Evita que toda la página tenga scroll */
+    /* Evita scroll de toda la página en escritorio */
     overflow: hidden;
 }
 
-
-/* ============================================================
-   CONTENEDOR PRINCIPAL
-============================================================ */
-
 .app {
-    width: min(1220px, 96%);
+    width: min(1100px, 96%);
     height: calc(100vh - 24px);
 
     margin: 12px auto;
 
     background: #ffffff;
-
     border-radius: 18px;
-
     overflow: hidden;
 
-    box-shadow:
-        0 15px 40px
-        rgba(0, 0, 0, 0.10);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.10);
 
     display: flex;
     flex-direction: column;
 }
-
-
-/* ============================================================
-   HEADER
-============================================================ */
 
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
 
-    flex-shrink: 0;
-
     padding: 18px 28px;
 
-    border-bottom:
-        1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
+
+    flex-shrink: 0;
 }
 
 .header h1 {
     margin: 0;
-
     font-size: 25px;
 }
 
 .header p {
-    margin: 4px 0 0;
-
+    margin: 5px 0 0;
     color: #6b7280;
-
     font-size: 14px;
 }
 
 .status {
     font-size: 13px;
-
     color: #16803c;
 }
 
-
-/* ============================================================
-   CONTENIDO
-============================================================ */
-
 .content {
     display: grid;
-
-    grid-template-columns:
-        minmax(0, 1fr)
-        minmax(0, 1fr);
+    grid-template-columns: 1fr 1fr;
 
     gap: 20px;
 
     padding: 20px 28px;
 
     flex: 1;
-
     min-height: 0;
 }
 
-
-/* ============================================================
-   PANELES
-============================================================ */
-
 .panel {
-    border:
-        1px solid #e5e7eb;
-
+    border: 1px solid #e5e7eb;
     border-radius: 14px;
 
     padding: 18px;
@@ -123,18 +88,8 @@ body {
 }
 
 .panel h2 {
-    margin:
-        0
-        0
-        16px;
-
-    font-size: 26px;
+    margin: 0 0 14px;
 }
-
-
-/* ============================================================
-   CAMPOS
-============================================================ */
 
 .field {
     margin-bottom: 14px;
@@ -146,14 +101,7 @@ body {
     margin-bottom: 7px;
 
     font-weight: bold;
-
-    font-size: 15px;
 }
-
-
-/* ============================================================
-   INPUTS
-============================================================ */
 
 input[type="file"],
 input[type="url"],
@@ -162,53 +110,25 @@ textarea {
 
     padding: 11px 12px;
 
-    border:
-        1px solid #d1d5db;
-
+    border: 1px solid #d1d5db;
     border-radius: 10px;
 
     background: #ffffff;
 
-    font-family: inherit;
-
-    font-size: 14px;
-
-    outline: none;
+    font-family: Arial, Helvetica, sans-serif;
 }
-
-input[type="file"]:focus,
-input[type="url"]:focus,
-textarea:focus {
-    border-color: #2563eb;
-}
-
-
-/* ============================================================
-   TEXTAREA
-============================================================ */
 
 textarea {
     min-height: 75px;
-    max-height: 110px;
+    max-height: 100px;
 
     resize: vertical;
 }
 
-
-/* ============================================================
-   VISTA PREVIA
-============================================================ */
-
 .preview {
-    display: block;
-
     width: 100%;
 
-    height: clamp(
-        190px,
-        30vh,
-        290px
-    );
+    height: clamp(180px, 28vh, 280px);
 
     object-fit: contain;
 
@@ -219,16 +139,9 @@ textarea {
     background: #e5e7eb;
 }
 
-
-/* Si no existe imagen todavía */
 .preview:not([src]) {
     display: none;
 }
-
-
-/* ============================================================
-   BOTÓN
-============================================================ */
 
 button {
     width: 100%;
@@ -245,40 +158,23 @@ button {
 
     font-weight: bold;
 
-    font-size: 14px;
-
     cursor: pointer;
-
-    transition:
-        transform 0.15s ease,
-        opacity 0.15s ease;
-}
-
-button:hover:not(:disabled) {
-    transform:
-        translateY(-1px);
 }
 
 button:disabled {
-    opacity: 0.55;
+    opacity: .55;
 
     cursor: not-allowed;
 }
 
-
-/* ============================================================
-   RESULTADO
-============================================================ */
-
 .result {
-    height:
-        calc(100% - 50px);
+    height: calc(100% - 48px);
 
     min-height: 0;
 
     margin: 0;
 
-    padding: 20px;
+    padding: 16px;
 
     border-radius: 12px;
 
@@ -286,116 +182,66 @@ button:disabled {
 
     color: #e2e8f0;
 
-    line-height: 1.45;
+    white-space: normal;
 
-    font-size: 15px;
+    line-height: 1.45;
 
     overflow-y: auto;
     overflow-x: hidden;
-
-    white-space: normal;
 }
 
+.note {
+    margin: 0;
 
-/* ============================================================
+    padding: 0 28px 14px;
+
+    color: #6b7280;
+
+    font-size: 12px;
+
+    flex-shrink: 0;
+}
+
+/* =========================================================
    MARKDOWN
-============================================================ */
-
-/*
-Evita los espacios enormes que Marked genera
-entre párrafos y elementos de listas.
-*/
+========================================================= */
 
 .result p {
-    margin:
-        4px
-        0
-        8px;
+    margin: 3px 0 7px;
 }
 
+.result p:last-child {
+    margin-bottom: 0;
+}
 
-/* Listas */
+.result strong {
+    font-weight: 700;
+    color: #ffffff;
+}
 
 .result ul,
 .result ol {
-    margin:
-        5px
-        0
-        10px;
+    margin: 5px 0 9px;
 
-    padding-left: 28px;
+    padding-left: 24px;
 }
-
-
-/* Cada elemento */
 
 .result li {
-    margin:
-        3px
-        0;
-
-    padding:
-        0
-        0
-        1px;
+    margin: 2px 0;
 }
-
-
-/*
-Marked puede colocar un <p>
-dentro de cada <li>.
-Esto elimina el espacio adicional.
-*/
 
 .result li > p {
-    margin:
-        2px
-        0;
+    margin: 2px 0;
 }
-
-
-/* Negritas */
-
-.result strong {
-    color: #ffffff;
-
-    font-weight: 700;
-}
-
-
-/* Títulos Markdown */
 
 .result h1,
 .result h2,
-.result h3,
-.result h4 {
-    color: #ffffff;
-
-    margin:
-        10px
-        0
-        6px;
+.result h3 {
+    margin-top: 8px;
+    margin-bottom: 5px;
 
     line-height: 1.25;
 }
-
-.result h1 {
-    font-size: 22px;
-}
-
-.result h2 {
-    font-size: 20px;
-}
-
-.result h3 {
-    font-size: 17px;
-}
-
-
-/*
-Elimina espacios innecesarios
-al principio y al final.
-*/
 
 .result > *:first-child {
     margin-top: 0;
@@ -405,99 +251,11 @@ al principio y al final.
     margin-bottom: 0;
 }
 
+/* =========================================================
+   RESPONSIVE
+========================================================= */
 
-/* ============================================================
-   SCROLLBAR RESULTADO
-============================================================ */
-
-.result::-webkit-scrollbar,
-.panel::-webkit-scrollbar {
-    width: 7px;
-}
-
-.result::-webkit-scrollbar-thumb,
-.panel::-webkit-scrollbar-thumb {
-    background:
-        rgba(148, 163, 184, 0.45);
-
-    border-radius: 20px;
-}
-
-.result::-webkit-scrollbar-track,
-.panel::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-
-/* ============================================================
-   NOTA INFERIOR
-============================================================ */
-
-.note {
-    flex-shrink: 0;
-
-    margin: 0;
-
-    padding:
-        0
-        28px
-        14px;
-
-    color: #6b7280;
-
-    font-size: 12px;
-}
-
-
-/* ============================================================
-   PANTALLAS MEDIANAS
-============================================================ */
-
-@media (
-    max-width: 950px
-) {
-
-    .app {
-        width: 98%;
-    }
-
-    .content {
-        gap: 14px;
-
-        padding:
-            16px;
-    }
-
-    .header {
-        padding:
-            16px
-            20px;
-    }
-
-    .panel {
-        padding:
-            15px;
-    }
-
-    .preview {
-        height:
-            clamp(
-                170px,
-                27vh,
-                240px
-            );
-    }
-
-}
-
-
-/* ============================================================
-   MÓVIL
-============================================================ */
-
-@media (
-    max-width: 760px
-) {
+@media (max-width: 760px) {
 
     html,
     body {
@@ -510,7 +268,6 @@ al principio y al final.
 
     .app {
         width: 100%;
-
         height: auto;
 
         min-height: 100vh;
@@ -520,25 +277,14 @@ al principio y al final.
         border-radius: 0;
     }
 
-    .header {
-        padding:
-            16px
-            18px;
-    }
+    .content {
+        grid-template-columns: 1fr;
 
-    .header h1 {
-        font-size: 22px;
+        padding: 18px;
     }
 
     .status {
         display: none;
-    }
-
-    .content {
-        grid-template-columns: 1fr;
-
-        padding:
-            16px;
     }
 
     .panel {
@@ -555,15 +301,5 @@ al principio y al final.
         height: auto;
 
         min-height: 320px;
-
-        max-height: none;
     }
-
-    .note {
-        padding:
-            0
-            18px
-            18px;
-    }
-
 }
