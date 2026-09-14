@@ -1,28 +1,33 @@
 * {
-
     box-sizing: border-box;
-
 }
 
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
 
 body {
-
-    margin: 0;
-
     font-family: Arial, Helvetica, sans-serif;
-
     background: #f4f6f9;
-
     color: #1f2937;
 
+    /* Evita que toda la página tenga scroll */
+    overflow: hidden;
 }
 
 
+/* ============================================================
+   CONTENEDOR PRINCIPAL
+============================================================ */
+
 .app {
+    width: min(1220px, 96%);
+    height: calc(100vh - 24px);
 
-    width: min(1000px, 94%);
-
-    margin: 32px auto;
+    margin: 12px auto;
 
     background: #ffffff;
 
@@ -30,151 +35,209 @@ body {
 
     overflow: hidden;
 
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.10);
-
-}
-
-
-.header {
+    box-shadow:
+        0 15px 40px
+        rgba(0, 0, 0, 0.10);
 
     display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    padding: 22px 28px;
-
-    border-bottom: 1px solid #e5e7eb;
-
+    flex-direction: column;
 }
 
 
-.header h1 {
+/* ============================================================
+   HEADER
+============================================================ */
 
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    flex-shrink: 0;
+
+    padding: 18px 28px;
+
+    border-bottom:
+        1px solid #e5e7eb;
+}
+
+.header h1 {
     margin: 0;
 
     font-size: 25px;
-
 }
 
-
 .header p {
-
-    margin: 5px 0 0;
+    margin: 4px 0 0;
 
     color: #6b7280;
 
     font-size: 14px;
-
 }
 
-
 .status {
-
     font-size: 13px;
 
     color: #16803c;
-
 }
 
+
+/* ============================================================
+   CONTENIDO
+============================================================ */
 
 .content {
-
     display: grid;
 
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(0, 1fr);
 
-    gap: 24px;
+    gap: 20px;
 
-    padding: 28px;
+    padding: 20px 28px;
 
+    flex: 1;
+
+    min-height: 0;
 }
 
 
-.panel {
+/* ============================================================
+   PANELES
+============================================================ */
 
-    border: 1px solid #e5e7eb;
+.panel {
+    border:
+        1px solid #e5e7eb;
 
     border-radius: 14px;
 
-    padding: 20px;
+    padding: 18px;
 
     background: #fafafa;
 
+    min-height: 0;
+
+    overflow: auto;
 }
 
+.panel h2 {
+    margin:
+        0
+        0
+        16px;
+
+    font-size: 26px;
+}
+
+
+/* ============================================================
+   CAMPOS
+============================================================ */
 
 .field {
-
-    margin-bottom: 18px;
-
+    margin-bottom: 14px;
 }
 
-
 .field label {
-
     display: block;
 
     margin-bottom: 7px;
 
     font-weight: bold;
 
+    font-size: 15px;
 }
 
 
+/* ============================================================
+   INPUTS
+============================================================ */
+
 input[type="file"],
-
+input[type="url"],
 textarea {
-
     width: 100%;
 
-    padding: 12px;
+    padding: 11px 12px;
 
-    border: 1px solid #d1d5db;
+    border:
+        1px solid #d1d5db;
 
     border-radius: 10px;
 
     background: #ffffff;
 
+    font-family: inherit;
+
+    font-size: 14px;
+
+    outline: none;
 }
 
+input[type="file"]:focus,
+input[type="url"]:focus,
+textarea:focus {
+    border-color: #2563eb;
+}
+
+
+/* ============================================================
+   TEXTAREA
+============================================================ */
 
 textarea {
-
-    min-height: 100px;
+    min-height: 75px;
+    max-height: 110px;
 
     resize: vertical;
-
 }
 
 
+/* ============================================================
+   VISTA PREVIA
+============================================================ */
+
 .preview {
+    display: block;
 
     width: 100%;
 
-    min-height: 260px;
-
-    max-height: 360px;
+    height: clamp(
+        190px,
+        30vh,
+        290px
+    );
 
     object-fit: contain;
+
+    margin-bottom: 12px;
 
     border-radius: 12px;
 
     background: #e5e7eb;
-
 }
 
 
-button {
+/* Si no existe imagen todavía */
+.preview:not([src]) {
+    display: none;
+}
 
+
+/* ============================================================
+   BOTÓN
+============================================================ */
+
+button {
     width: 100%;
 
     border: none;
 
     border-radius: 10px;
 
-    padding: 14px;
+    padding: 12px;
 
     background: #2563eb;
 
@@ -182,27 +245,40 @@ button {
 
     font-weight: bold;
 
+    font-size: 14px;
+
     cursor: pointer;
 
+    transition:
+        transform 0.15s ease,
+        opacity 0.15s ease;
 }
 
+button:hover:not(:disabled) {
+    transform:
+        translateY(-1px);
+}
 
 button:disabled {
-
-    opacity: .55;
+    opacity: 0.55;
 
     cursor: not-allowed;
-
 }
 
 
-.result {
+/* ============================================================
+   RESULTADO
+============================================================ */
 
-    min-height: 360px;
+.result {
+    height:
+        calc(100% - 50px);
+
+    min-height: 0;
 
     margin: 0;
 
-    padding: 16px;
+    padding: 20px;
 
     border-radius: 12px;
 
@@ -210,82 +286,284 @@ button:disabled {
 
     color: #e2e8f0;
 
+    line-height: 1.45;
+
+    font-size: 15px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
     white-space: normal;
-
-    line-height: 1.5;
-
-    overflow: auto;
-
 }
 
 
+/* ============================================================
+   MARKDOWN
+============================================================ */
+
+/*
+Evita los espacios enormes que Marked genera
+entre párrafos y elementos de listas.
+*/
+
+.result p {
+    margin:
+        4px
+        0
+        8px;
+}
+
+
+/* Listas */
+
+.result ul,
+.result ol {
+    margin:
+        5px
+        0
+        10px;
+
+    padding-left: 28px;
+}
+
+
+/* Cada elemento */
+
+.result li {
+    margin:
+        3px
+        0;
+
+    padding:
+        0
+        0
+        1px;
+}
+
+
+/*
+Marked puede colocar un <p>
+dentro de cada <li>.
+Esto elimina el espacio adicional.
+*/
+
+.result li > p {
+    margin:
+        2px
+        0;
+}
+
+
+/* Negritas */
+
+.result strong {
+    color: #ffffff;
+
+    font-weight: 700;
+}
+
+
+/* Títulos Markdown */
+
+.result h1,
+.result h2,
+.result h3,
+.result h4 {
+    color: #ffffff;
+
+    margin:
+        10px
+        0
+        6px;
+
+    line-height: 1.25;
+}
+
+.result h1 {
+    font-size: 22px;
+}
+
+.result h2 {
+    font-size: 20px;
+}
+
+.result h3 {
+    font-size: 17px;
+}
+
+
+/*
+Elimina espacios innecesarios
+al principio y al final.
+*/
+
+.result > *:first-child {
+    margin-top: 0;
+}
+
+.result > *:last-child {
+    margin-bottom: 0;
+}
+
+
+/* ============================================================
+   SCROLLBAR RESULTADO
+============================================================ */
+
+.result::-webkit-scrollbar,
+.panel::-webkit-scrollbar {
+    width: 7px;
+}
+
+.result::-webkit-scrollbar-thumb,
+.panel::-webkit-scrollbar-thumb {
+    background:
+        rgba(148, 163, 184, 0.45);
+
+    border-radius: 20px;
+}
+
+.result::-webkit-scrollbar-track,
+.panel::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+/* ============================================================
+   NOTA INFERIOR
+============================================================ */
+
 .note {
+    flex-shrink: 0;
 
     margin: 0;
 
-    padding: 0 28px 26px;
+    padding:
+        0
+        28px
+        14px;
 
     color: #6b7280;
 
-    font-size: 13px;
+    font-size: 12px;
+}
+
+
+/* ============================================================
+   PANTALLAS MEDIANAS
+============================================================ */
+
+@media (
+    max-width: 950px
+) {
+
+    .app {
+        width: 98%;
+    }
+
+    .content {
+        gap: 14px;
+
+        padding:
+            16px;
+    }
+
+    .header {
+        padding:
+            16px
+            20px;
+    }
+
+    .panel {
+        padding:
+            15px;
+    }
+
+    .preview {
+        height:
+            clamp(
+                170px,
+                27vh,
+                240px
+            );
+    }
 
 }
 
 
-@media (max-width: 760px) {
+/* ============================================================
+   MÓVIL
+============================================================ */
+
+@media (
+    max-width: 760px
+) {
+
+    html,
+    body {
+        height: auto;
+    }
+
+    body {
+        overflow: auto;
+    }
 
     .app {
-
         width: 100%;
+
+        height: auto;
+
+        min-height: 100vh;
 
         margin: 0;
 
         border-radius: 0;
-
     }
 
-
-    .content {
-
-        grid-template-columns: 1fr;
-
-        padding: 18px;
-
+    .header {
+        padding:
+            16px
+            18px;
     }
 
+    .header h1 {
+        font-size: 22px;
+    }
 
     .status {
-
         display: none;
-
     }
-}
 
-.result p {
-    margin: 0 0 14px;
-}
+    .content {
+        grid-template-columns: 1fr;
 
-.result p:last-child {
-    margin-bottom: 0;
-}
+        padding:
+            16px;
+    }
 
-.result strong {
-    font-weight: 700;
-}
+    .panel {
+        overflow: visible;
+    }
 
-.result ul,
-.result ol {
-    margin: 10px 0 16px;
-    padding-left: 24px;
-}
+    .preview {
+        height: auto;
 
-.result li {
-    margin: 6px 0;
-}
+        max-height: 320px;
+    }
 
-.result h1,
-.result h2,
-.result h3 {
-    margin-top: 18px;
-    margin-bottom: 10px;
+    .result {
+        height: auto;
+
+        min-height: 320px;
+
+        max-height: none;
+    }
+
+    .note {
+        padding:
+            0
+            18px
+            18px;
+    }
+
 }
