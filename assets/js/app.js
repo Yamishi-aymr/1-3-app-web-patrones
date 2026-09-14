@@ -60,20 +60,24 @@ function showText(message) {
 MOSTRAR RESPUESTA MARKDOWN
 ============================================================
 */
-
 function showMarkdown(markdownText) {
+
+    // Normalizar Markdown escapado que pueda enviar la IA
+    const normalizedMarkdown = markdownText
+        .replace(/\\\*/g, "*")
+        .replace(/\\_/g, "_")
+        .replace(/\\#/g, "#")
+        .replace(/\\-/g, "-");
 
     const html =
         marked.parse(
-            markdownText
+            normalizedMarkdown
         );
-
 
     result.innerHTML =
         DOMPurify.sanitize(
             html
         );
-
 }
 
 

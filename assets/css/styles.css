@@ -210,7 +210,7 @@ button:disabled {
 
     color: #e2e8f0;
 
-    white-space: pre-wrap;
+    white-space: normal;
 
     line-height: 1.5;
 
@@ -259,4 +259,33 @@ button:disabled {
         display: none;
 
     }
+}
+
+.result p {
+    margin: 0 0 14px;
+}
+
+.result p:last-child {
+    margin-bottom: 0;
+}
+
+.result strong {
+    font-weight: 700;
+}
+
+.result ul,
+.result ol {
+    margin: 10px 0 16px;
+    padding-left: 24px;
+}
+
+.result li {
+    margin: 6px 0;
+}
+
+.result h1,
+.result h2,
+.result h3 {
+    margin-top: 18px;
+    margin-bottom: 10px;
 }
