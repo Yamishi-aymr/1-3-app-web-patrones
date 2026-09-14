@@ -1,6 +1,6 @@
 const API_URL =
 
-    "https://1-3-app-web-patrones.vercel.app";
+    "https://1-3-app-web-patrones.vercel.app/api/analyze";
 
 
 const form = document.getElementById("analyzeForm");
