@@ -13,19 +13,23 @@ body {
     font-family: Arial, Helvetica, sans-serif;
     background: #f4f6f9;
     color: #1f2937;
-
-    /* Evita scroll de toda la página en escritorio */
     overflow: hidden;
 }
 
-.app {
-    width: min(1100px, 96%);
-    height: calc(100vh - 24px);
+/* =========================================================
+   CONTENEDOR PRINCIPAL
+========================================================= */
 
-    margin: 12px auto;
+.app {
+    width: min(1200px, 96vw);
+    height: calc(100vh - 20px);
+
+    margin: 10px auto;
 
     background: #ffffff;
+
     border-radius: 18px;
+
     overflow: hidden;
 
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.10);
@@ -34,12 +38,16 @@ body {
     flex-direction: column;
 }
 
+/* =========================================================
+   HEADER
+========================================================= */
+
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
 
-    padding: 18px 28px;
+    padding: 14px 24px;
 
     border-bottom: 1px solid #e5e7eb;
 
@@ -48,13 +56,13 @@ body {
 
 .header h1 {
     margin: 0;
-    font-size: 25px;
+    font-size: 24px;
 }
 
 .header p {
-    margin: 5px 0 0;
+    margin: 3px 0 0;
     color: #6b7280;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .status {
@@ -62,45 +70,66 @@ body {
     color: #16803c;
 }
 
+/* =========================================================
+   CONTENIDO
+========================================================= */
+
 .content {
     display: grid;
-    grid-template-columns: 1fr 1fr;
 
-    gap: 20px;
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(0, 1fr);
 
-    padding: 20px 28px;
+    gap: 16px;
+
+    padding: 16px 24px;
 
     flex: 1;
+
     min-height: 0;
 }
 
+/* =========================================================
+   PANELES
+========================================================= */
+
 .panel {
     border: 1px solid #e5e7eb;
+
     border-radius: 14px;
 
-    padding: 18px;
+    padding: 14px;
 
     background: #fafafa;
 
     min-height: 0;
 
-    overflow: auto;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
 }
 
 .panel h2 {
-    margin: 0 0 14px;
+    margin: 0 0 10px;
+    font-size: 22px;
+    flex-shrink: 0;
 }
 
+/* =========================================================
+   CAMPOS
+========================================================= */
+
 .field {
-    margin-bottom: 14px;
+    margin-bottom: 10px;
 }
 
 .field label {
     display: block;
-
-    margin-bottom: 7px;
-
+    margin-bottom: 5px;
     font-weight: bold;
+    font-size: 14px;
 }
 
 input[type="file"],
@@ -108,49 +137,61 @@ input[type="url"],
 textarea {
     width: 100%;
 
-    padding: 11px 12px;
+    padding: 9px 10px;
 
     border: 1px solid #d1d5db;
-    border-radius: 10px;
+
+    border-radius: 9px;
 
     background: #ffffff;
 
     font-family: Arial, Helvetica, sans-serif;
+
+    font-size: 13px;
 }
 
 textarea {
-    min-height: 75px;
-    max-height: 100px;
-
+    min-height: 58px;
+    max-height: 80px;
     resize: vertical;
 }
+
+/* =========================================================
+   PREVIEW
+========================================================= */
 
 .preview {
     width: 100%;
 
-    height: clamp(180px, 28vh, 280px);
+    height: clamp(150px, 25vh, 230px);
 
     object-fit: contain;
 
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 
-    border-radius: 12px;
+    border-radius: 10px;
 
     background: #e5e7eb;
+
+    flex-shrink: 0;
 }
 
 .preview:not([src]) {
     display: none;
 }
 
+/* =========================================================
+   BOTÓN
+========================================================= */
+
 button {
     width: 100%;
 
     border: none;
 
-    border-radius: 10px;
+    border-radius: 9px;
 
-    padding: 12px;
+    padding: 10px;
 
     background: #2563eb;
 
@@ -158,23 +199,30 @@ button {
 
     font-weight: bold;
 
+    font-size: 13px;
+
     cursor: pointer;
+
+    flex-shrink: 0;
 }
 
 button:disabled {
     opacity: .55;
-
     cursor: not-allowed;
 }
 
+/* =========================================================
+   RESULTADO
+========================================================= */
+
 .result {
-    height: calc(100% - 48px);
+    flex: 1;
 
     min-height: 0;
 
     margin: 0;
 
-    padding: 16px;
+    padding: 14px 16px;
 
     border-radius: 12px;
 
@@ -182,36 +230,36 @@ button:disabled {
 
     color: #e2e8f0;
 
-    white-space: normal;
+    font-size: 14px;
 
-    line-height: 1.45;
+    line-height: 1.35;
+
+    white-space: normal;
 
     overflow-y: auto;
     overflow-x: hidden;
 }
 
-.note {
-    margin: 0;
-
-    padding: 0 28px 14px;
-
-    color: #6b7280;
-
-    font-size: 12px;
-
-    flex-shrink: 0;
-}
-
 /* =========================================================
-   MARKDOWN
+   MARKDOWN COMPACTO
 ========================================================= */
 
 .result p {
-    margin: 3px 0 7px;
+    margin: 0 0 4px;
 }
 
-.result p:last-child {
-    margin-bottom: 0;
+.result ul,
+.result ol {
+    margin: 2px 0 5px;
+    padding-left: 20px;
+}
+
+.result li {
+    margin: 1px 0;
+}
+
+.result li > p {
+    margin: 0;
 }
 
 .result strong {
@@ -219,28 +267,25 @@ button:disabled {
     color: #ffffff;
 }
 
-.result ul,
-.result ol {
-    margin: 5px 0 9px;
-
-    padding-left: 24px;
-}
-
-.result li {
-    margin: 2px 0;
-}
-
-.result li > p {
-    margin: 2px 0;
-}
-
 .result h1,
 .result h2,
-.result h3 {
-    margin-top: 8px;
-    margin-bottom: 5px;
+.result h3,
+.result h4 {
+    margin: 5px 0 3px;
+    line-height: 1.2;
+    color: #ffffff;
+}
 
-    line-height: 1.25;
+.result h1 {
+    font-size: 18px;
+}
+
+.result h2 {
+    font-size: 17px;
+}
+
+.result h3 {
+    font-size: 16px;
 }
 
 .result > *:first-child {
@@ -252,7 +297,53 @@ button:disabled {
 }
 
 /* =========================================================
-   RESPONSIVE
+   NOTA
+========================================================= */
+
+.note {
+    margin: 0;
+
+    padding: 0 24px 10px;
+
+    color: #6b7280;
+
+    font-size: 11px;
+
+    flex-shrink: 0;
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .app {
+        width: 98vw;
+        height: calc(100vh - 10px);
+        margin: 5px auto;
+    }
+
+    .content {
+        gap: 12px;
+        padding: 12px;
+    }
+
+    .preview {
+        height: clamp(140px, 22vh, 200px);
+    }
+
+    .header {
+        padding: 12px 16px;
+    }
+
+    .panel {
+        padding: 12px;
+    }
+}
+
+/* =========================================================
+   MÓVIL
 ========================================================= */
 
 @media (max-width: 760px) {
@@ -269,7 +360,6 @@ button:disabled {
     .app {
         width: 100%;
         height: auto;
-
         min-height: 100vh;
 
         margin: 0;
@@ -279,8 +369,7 @@ button:disabled {
 
     .content {
         grid-template-columns: 1fr;
-
-        padding: 18px;
+        padding: 12px;
     }
 
     .status {
@@ -293,13 +382,11 @@ button:disabled {
 
     .preview {
         height: auto;
-
-        max-height: 320px;
+        max-height: 240px;
     }
 
     .result {
-        height: auto;
-
-        min-height: 320px;
+        min-height: 280px;
+        max-height: none;
     }
 }
