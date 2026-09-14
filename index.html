@@ -41,7 +41,11 @@
                         1. Selecciona una imagen
                     </label>
 
-                    <input id="imageInput" type="file" accept="image/jpeg,image/png,image/webp">
+                    <input
+                        id="imageInput"
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                    >
 
                 </div>
 
@@ -76,18 +80,27 @@
                         Pega la URL de una imagen
                     </label>
 
-                    <input id="imageUrl" type="url" placeholder="https://ejemplo.com/imagen.jpg" autocomplete="off"
+                    <input
+                        id="imageUrl"
+                        type="url"
+                        placeholder="https://ejemplo.com/imagen.jpg"
+                        autocomplete="off"
                         style="
                             width: 100%;
                             padding: 12px;
                             border: 1px solid #d1d5db;
                             border-radius: 10px;
                             background: #ffffff;
-                        ">
+                        "
+                    >
 
                 </div>
 
-                <img id="preview" class="preview" alt="Vista previa de la imagen">
+                <img
+                    id="preview"
+                    class="preview"
+                    alt="Vista previa de la imagen"
+                >
 
                 <div class="field">
 
@@ -95,12 +108,19 @@
                         2. ¿Qué quieres identificar?
                     </label>
 
-                    <textarea id="promptInput" maxlength="500"
-                        placeholder="Ejemplo: identifica los objetos y estima cuántos hay de cada tipo."></textarea>
+                    <textarea
+                        id="promptInput"
+                        maxlength="500"
+                        placeholder="Ejemplo: identifica los objetos y estima cuántos hay de cada tipo."
+                    ></textarea>
 
                 </div>
 
-                <button id="analyzeButton" type="submit" disabled>
+                <button
+                    id="analyzeButton"
+                    type="submit"
+                    disabled
+                >
                     Analizar imagen
                 </button>
 
@@ -112,7 +132,12 @@
                     Resultado del análisis
                 </h2>
 
-                <pre id="result" class="result">Selecciona una imagen o pega una URL para comenzar.</pre>
+                <div
+                    id="result"
+                    class="result"
+                >
+                    Selecciona una imagen o pega una URL para comenzar.
+                </div>
 
             </section>
 
@@ -126,6 +151,16 @@
         </p>
 
     </main>
+
+    <!-- Librería para interpretar Markdown -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/marked/marked.min.js">
+    </script>
+
+    <!-- Limpia el HTML generado antes de mostrarlo -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js">
+    </script>
 
     <script src="assets/js/app.js"></script>
 
