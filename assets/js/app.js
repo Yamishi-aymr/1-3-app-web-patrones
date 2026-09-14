@@ -1,11 +1,12 @@
 const API_URL =
-
     "https://1-3-app-web-patrones.vercel.app/api/analyze";
 
 
 const form = document.getElementById("analyzeForm");
 
 const fileInput = document.getElementById("imageInput");
+
+const imageUrlInput = document.getElementById("imageUrl");
 
 const promptInput = document.getElementById("promptInput");
 
@@ -20,23 +21,81 @@ const statusText = document.getElementById("statusText");
 
 const MAX_FILE_SIZE = 3 * 1024 * 1024;
 
+
 const ALLOWED_TYPES = [
-
     "image/jpeg",
-
     "image/png",
-
     "image/webp"
-
 ];
 
 
 let imageData = "";
 
 
+/*
+============================================================
+VALIDAR URL
+============================================================
+*/
+
+function isValidImageUrl(value) {
+
+    if (!value) {
+        return false;
+    }
+
+    try {
+
+        const url = new URL(value);
+
+        return (
+            url.protocol === "https:" ||
+            url.protocol === "http:"
+        );
+
+    }
+    catch {
+
+        return false;
+
+    }
+
+}
+
+
+/*
+============================================================
+ACTUALIZAR ESTADO DEL BOTÓN
+============================================================
+*/
+
+function updateAnalyzeButton() {
+
+    const imageUrl =
+        imageUrlInput.value.trim();
+
+    const hasFile =
+        Boolean(imageData);
+
+    const hasUrl =
+        isValidImageUrl(imageUrl);
+
+    analyzeButton.disabled =
+        !hasFile && !hasUrl;
+
+}
+
+
+/*
+============================================================
+SELECCIONAR IMAGEN LOCAL
+============================================================
+*/
+
 fileInput.addEventListener("change", () => {
 
-    const file = fileInput.files[0];
+    const file =
+        fileInput.files[0];
 
 
     imageData = "";
@@ -45,21 +104,36 @@ fileInput.addEventListener("change", () => {
 
     analyzeButton.disabled = true;
 
-    result.textContent = "Selecciona una imagen para comenzar.";
+    result.textContent =
+        "Selecciona una imagen o pega una URL para comenzar.";
 
 
     if (!file) {
+
+        updateAnalyzeButton();
 
         return;
 
     }
 
 
+    /*
+    Si el usuario selecciona un archivo,
+    eliminamos la URL para evitar dos fuentes
+    de imagen al mismo tiempo.
+    */
+
+    imageUrlInput.value = "";
+
+
     if (!ALLOWED_TYPES.includes(file.type)) {
 
-        result.textContent = "Formato no permitido. Usa JPG, PNG o WebP.";
+        result.textContent =
+            "Formato no permitido. Usa JPG, PNG o WebP.";
 
         fileInput.value = "";
+
+        updateAnalyzeButton();
 
         return;
 
@@ -68,27 +142,48 @@ fileInput.addEventListener("change", () => {
 
     if (file.size > MAX_FILE_SIZE) {
 
-        result.textContent = "La imagen debe pesar como máximo 3 MB.";
+        result.textContent =
+            "La imagen debe pesar como máximo 3 MB.";
 
         fileInput.value = "";
+
+        updateAnalyzeButton();
 
         return;
 
     }
 
 
-    const reader = new FileReader();
+    const reader =
+        new FileReader();
 
 
     reader.onload = () => {
 
-        imageData = reader.result;
+        imageData =
+            reader.result;
 
-        preview.src = imageData;
+        preview.src =
+            imageData;
 
-        analyzeButton.disabled = false;
+        result.textContent =
+            "Imagen local lista para analizar.";
 
-        result.textContent = "Imagen lista para analizar.";
+        updateAnalyzeButton();
+
+    };
+
+
+    reader.onerror = () => {
+
+        imageData = "";
+
+        preview.removeAttribute("src");
+
+        result.textContent =
+            "No fue posible leer la imagen seleccionada.";
+
+        updateAnalyzeButton();
 
     };
 
@@ -98,14 +193,133 @@ fileInput.addEventListener("change", () => {
 });
 
 
+/*
+============================================================
+INGRESAR IMAGEN POR URL
+============================================================
+*/
+
+imageUrlInput.addEventListener("input", () => {
+
+    const imageUrl =
+        imageUrlInput.value.trim();
+
+
+    /*
+    Si el usuario comienza a escribir una URL,
+    eliminamos cualquier archivo previamente seleccionado.
+    */
+
+    if (imageUrl) {
+
+        fileInput.value = "";
+
+        imageData = "";
+
+    }
+
+
+    if (!imageUrl) {
+
+        preview.removeAttribute("src");
+
+        result.textContent =
+            "Selecciona una imagen o pega una URL para comenzar.";
+
+        updateAnalyzeButton();
+
+        return;
+
+    }
+
+
+    if (!isValidImageUrl(imageUrl)) {
+
+        preview.removeAttribute("src");
+
+        result.textContent =
+            "La URL debe comenzar con http:// o https://";
+
+        updateAnalyzeButton();
+
+        return;
+
+    }
+
+
+    /*
+    Mostramos la URL como vista previa.
+    */
+
+    preview.src =
+        imageUrl;
+
+
+    result.textContent =
+        "URL de imagen lista para analizar.";
+
+
+    updateAnalyzeButton();
+
+});
+
+
+/*
+============================================================
+ERROR DE VISTA PREVIA
+============================================================
+*/
+
+preview.addEventListener("error", () => {
+
+    /*
+    No bloqueamos el análisis solamente porque
+    el navegador no pueda mostrar la vista previa.
+
+    Algunos servidores impiden mostrar sus imágenes
+    directamente en otras páginas.
+    */
+
+    if (imageUrlInput.value.trim()) {
+
+        result.textContent =
+            "No fue posible mostrar la vista previa. Puedes intentar analizar la URL de todos modos.";
+
+    }
+
+});
+
+
+/*
+============================================================
+ENVIAR IMAGEN AL BACKEND
+============================================================
+*/
+
 form.addEventListener("submit", async (event) => {
 
     event.preventDefault();
 
 
-    if (!imageData) {
+    const imageUrl =
+        imageUrlInput.value.trim();
 
-        result.textContent = "Primero selecciona una imagen.";
+
+    const usingLocalImage =
+        Boolean(imageData);
+
+
+    const usingImageUrl =
+        isValidImageUrl(imageUrl);
+
+
+    if (
+        !usingLocalImage &&
+        !usingImageUrl
+    ) {
+
+        result.textContent =
+            "Selecciona una imagen o proporciona una URL válida.";
 
         return;
 
@@ -114,65 +328,100 @@ form.addEventListener("submit", async (event) => {
 
     analyzeButton.disabled = true;
 
-    statusText.textContent = "● Analizando...";
+    statusText.textContent =
+        "● Analizando...";
 
-    result.textContent = "La IA está analizando los patrones visuales...";
+    result.textContent =
+        "La IA está analizando los patrones visuales...";
 
 
     try {
 
-        const response = await fetch(API_URL, {
+        const response =
+            await fetch(
+                API_URL,
+                {
+                    method: "POST",
 
-            method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
 
-            headers: {
+                    body: JSON.stringify({
 
-                "Content-Type": "application/json"
+                        image_data:
+                            usingLocalImage
+                                ? imageData
+                                : "",
 
-            },
+                        image_url:
+                            usingImageUrl
+                                ? imageUrl
+                                : "",
 
-            body: JSON.stringify({
+                        prompt:
+                            promptInput.value.trim()
 
-                image_data: imageData,
-
-                prompt: promptInput.value.trim()
-
-            })
-
-        });
-
-
-        const data = await response.json();
+                    })
+                }
+            );
 
 
-        if (!response.ok) {
+        let data;
+
+
+        try {
+
+            data =
+                await response.json();
+
+        }
+        catch {
 
             throw new Error(
-
-                data.error || "Error del servidor"
-
+                "El servidor devolvió una respuesta no válida."
             );
 
         }
 
 
-        result.textContent = data.analysis;
+        if (!response.ok) {
 
-        statusText.textContent = "● Análisis terminado";
+            throw new Error(
+                data.error ||
+                "Error del servidor"
+            );
+
+        }
+
+
+        result.textContent =
+            data.analysis;
+
+        statusText.textContent =
+            "● Análisis terminado";
 
     }
-
     catch (error) {
 
-        result.textContent = "Error: " + error.message;
+        console.error(
+            "Error al analizar imagen:",
+            error
+        );
 
-        statusText.textContent = "● Error";
+
+        result.textContent =
+            "Error: " +
+            error.message;
+
+
+        statusText.textContent =
+            "● Error";
 
     }
-
     finally {
 
-        analyzeButton.disabled = false;
+        updateAnalyzeButton();
 
     }
 

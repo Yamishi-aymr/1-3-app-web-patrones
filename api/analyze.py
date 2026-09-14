@@ -1,22 +1,20 @@
 import base64
-
 import json
-
 import os
 
-
 from http.server import BaseHTTPRequestHandler
+from urllib.parse import urlparse
 
 from openai import OpenAI
 
 
+# ============================================================
+# CONFIGURACIÓN
+# ============================================================
 
 ALLOWED_ORIGIN = os.environ.get(
-
     "ALLOWED_ORIGIN",
-
     ""
-
 ).rstrip("/")
 
 
@@ -24,311 +22,486 @@ MAX_IMAGE_BYTES = 3 * 1024 * 1024
 
 MAX_REQUEST_BYTES = 4_400_000
 
+
 ALLOWED_PREFIXES = (
-
     "data:image/jpeg;base64,",
-
     "data:image/png;base64,",
-
     "data:image/webp;base64,"
-
 )
 
 
+# ============================================================
+# VALIDAR URL
+# ============================================================
+
+def is_valid_image_url(value):
+
+    if not value:
+
+        return False
+
+
+    try:
+
+        parsed = urlparse(value)
+
+
+        if parsed.scheme not in (
+            "http",
+            "https"
+        ):
+
+            return False
+
+
+        if not parsed.netloc:
+
+            return False
+
+
+        return True
+
+
+    except Exception:
+
+        return False
+
+
+# ============================================================
+# HANDLER DE VERCEL
+# ============================================================
 
 class handler(BaseHTTPRequestHandler):
 
 
+    # ========================================================
+    # CORS
+    # ========================================================
+
     def add_cors_headers(self):
 
-        origin = self.headers.get("Origin", "")
+        origin = self.headers.get(
+            "Origin",
+            ""
+        )
 
 
-        if ALLOWED_ORIGIN and origin == ALLOWED_ORIGIN:
+        if (
+            ALLOWED_ORIGIN
+            and origin == ALLOWED_ORIGIN
+        ):
 
             self.send_header(
-
                 "Access-Control-Allow-Origin",
-
                 origin
-
             )
 
-            self.send_header("Vary", "Origin")
+            self.send_header(
+                "Vary",
+                "Origin"
+            )
 
 
-    def send_json(self, status_code, data):
+    # ========================================================
+    # RESPUESTA JSON
+    # ========================================================
+
+    def send_json(
+        self,
+        status_code,
+        data
+    ):
 
         body = json.dumps(
-
             data,
-
             ensure_ascii=False
+        ).encode(
+            "utf-8"
+        )
 
-        ).encode("utf-8")
 
+        self.send_response(
+            status_code
+        )
 
-        self.send_response(status_code)
 
         self.send_header(
-
             "Content-Type",
-
             "application/json; charset=utf-8"
-
         )
+
 
         self.add_cors_headers()
 
+
         self.send_header(
-
             "Content-Length",
-
-            str(len(body))
-
+            str(
+                len(body)
+            )
         )
+
 
         self.end_headers()
 
-        self.wfile.write(body)
 
+        self.wfile.write(
+            body
+        )
+
+
+    # ========================================================
+    # OPTIONS / PREFLIGHT
+    # ========================================================
 
     def do_OPTIONS(self):
 
-        origin = self.headers.get("Origin", "")
+        origin = self.headers.get(
+            "Origin",
+            ""
+        )
 
 
-        if ALLOWED_ORIGIN and origin != ALLOWED_ORIGIN:
+        if (
+            ALLOWED_ORIGIN
+            and origin != ALLOWED_ORIGIN
+        ):
 
-            self.send_response(403)
+            self.send_response(
+                403
+            )
 
             self.end_headers()
 
             return
 
 
-        self.send_response(204)
+        self.send_response(
+            204
+        )
+
 
         self.add_cors_headers()
 
-        self.send_header(
 
+        self.send_header(
             "Access-Control-Allow-Methods",
-
             "POST, OPTIONS"
-
         )
 
-        self.send_header(
 
+        self.send_header(
             "Access-Control-Allow-Headers",
-
             "Content-Type"
-
         )
+
 
         self.send_header(
-
             "Access-Control-Max-Age",
-
             "86400"
-
         )
+
 
         self.end_headers()
 
 
+    # ========================================================
+    # GET
+    # ========================================================
+
     def do_GET(self):
 
         self.send_json(
-
             405,
-
             {
-
                 "error":
-
                     "Este endpoint solamente acepta POST."
-
             }
-
         )
 
+
+    # ========================================================
+    # POST
+    # ========================================================
 
     def do_POST(self):
 
         try:
 
-            origin = self.headers.get("Origin", "")
+            # =================================================
+            # VALIDAR ORIGEN
+            # =================================================
 
-
-            if ALLOWED_ORIGIN and origin != ALLOWED_ORIGIN:
-
-                self.send_json(
-
-                    403,
-
-                    {"error": "Origen no autorizado."}
-
-                )
-
-                return
-
-
-            content_length = int(
-
-                self.headers.get("Content-Length", 0)
-
+            origin = self.headers.get(
+                "Origin",
+                ""
             )
 
 
             if (
-
-                content_length <= 0
-
-                or content_length > MAX_REQUEST_BYTES
-
+                ALLOWED_ORIGIN
+                and origin != ALLOWED_ORIGIN
             ):
 
                 self.send_json(
-
-                    413,
-
-                    {"error": "La petición es demasiado grande."}
-
+                    403,
+                    {
+                        "error":
+                            "Origen no autorizado."
+                    }
                 )
 
                 return
 
 
-            body = self.rfile.read(content_length)
+            # =================================================
+            # VALIDAR TAMAÑO DE PETICIÓN
+            # =================================================
 
-            data = json.loads(body.decode("utf-8"))
+            content_length = int(
+                self.headers.get(
+                    "Content-Length",
+                    0
+                )
+            )
+
+
+            if (
+                content_length <= 0
+                or
+                content_length > MAX_REQUEST_BYTES
+            ):
+
+                self.send_json(
+                    413,
+                    {
+                        "error":
+                            "La petición es demasiado grande."
+                    }
+                )
+
+                return
+
+
+            # =================================================
+            # LEER JSON
+            # =================================================
+
+            body = self.rfile.read(
+                content_length
+            )
+
+
+            data = json.loads(
+                body.decode(
+                    "utf-8"
+                )
+            )
 
 
             image_data = str(
+                data.get(
+                    "image_data",
+                    ""
+                )
+            ).strip()
 
-                data.get("image_data", "")
 
+            image_url = str(
+                data.get(
+                    "image_url",
+                    ""
+                )
             ).strip()
 
 
             prompt = str(
-
-                data.get("prompt", "")
-
+                data.get(
+                    "prompt",
+                    ""
+                )
             ).strip()
 
 
-            if not image_data.startswith(ALLOWED_PREFIXES):
-
-                self.send_json(
-
-                    400,
-
-                    {"error": "Formato de imagen no permitido."}
-
-                )
-
-                return
-
-
-            try:
-
-                encoded = image_data.split(",", 1)[1]
-
-                image_bytes = base64.b64decode(
-
-                    encoded,
-
-                    validate=True
-
-                )
-
-            except Exception:
-
-                self.send_json(
-
-                    400,
-
-                    {"error": "La imagen no contiene Base64 válido."}
-
-                )
-
-                return
-
+            # =================================================
+            # VALIDAR QUE EXISTA UNA FUENTE DE IMAGEN
+            # =================================================
 
             if (
-
-                len(image_bytes) == 0
-
-                or len(image_bytes) > MAX_IMAGE_BYTES
-
+                not image_data
+                and
+                not image_url
             ):
 
                 self.send_json(
-
-                    413,
-
-                    {"error": "La imagen debe pesar como máximo 3 MB."}
-
+                    400,
+                    {
+                        "error":
+                            "Debes proporcionar una imagen o una URL."
+                    }
                 )
 
                 return
 
+
+            # =================================================
+            # IMAGEN LOCAL EN BASE64
+            # =================================================
+
+            if image_data:
+
+                if not image_data.startswith(
+                    ALLOWED_PREFIXES
+                ):
+
+                    self.send_json(
+                        400,
+                        {
+                            "error":
+                                "Formato de imagen no permitido."
+                        }
+                    )
+
+                    return
+
+
+                try:
+
+                    encoded = image_data.split(
+                        ",",
+                        1
+                    )[1]
+
+
+                    image_bytes = base64.b64decode(
+                        encoded,
+                        validate=True
+                    )
+
+
+                except Exception:
+
+                    self.send_json(
+                        400,
+                        {
+                            "error":
+                                "La imagen no contiene Base64 válido."
+                        }
+                    )
+
+                    return
+
+
+                if (
+                    len(image_bytes) == 0
+                    or
+                    len(image_bytes) > MAX_IMAGE_BYTES
+                ):
+
+                    self.send_json(
+                        413,
+                        {
+                            "error":
+                                "La imagen debe pesar como máximo 3 MB."
+                        }
+                    )
+
+                    return
+
+
+                final_image = image_data
+
+
+            # =================================================
+            # IMAGEN MEDIANTE URL
+            # =================================================
+
+            else:
+
+                if not is_valid_image_url(
+                    image_url
+                ):
+
+                    self.send_json(
+                        400,
+                        {
+                            "error":
+                                "La URL de la imagen no es válida."
+                        }
+                    )
+
+                    return
+
+
+                final_image = image_url
+
+
+            # =================================================
+            # PROMPT PREDETERMINADO
+            # =================================================
 
             if not prompt:
 
                 prompt = (
-
                     "Identifica los patrones y objetos visibles, "
-
                     "agrúpalos por tipo y estima cuántos aparecen."
-
                 )
 
 
-            api_key = os.environ.get("OPENAI_API_KEY")
+            # =================================================
+            # API KEY
+            # =================================================
+
+            api_key = os.environ.get(
+                "OPENAI_API_KEY"
+            )
 
 
             if not api_key:
 
                 self.send_json(
-
                     500,
-
-                    {"error": "OPENAI_API_KEY no está configurada."}
-
+                    {
+                        "error":
+                            "OPENAI_API_KEY no está configurada."
+                    }
                 )
 
                 return
 
 
-            client = OpenAI(api_key=api_key)
+            # =================================================
+            # CLIENTE OPENAI
+            # =================================================
 
+            client = OpenAI(
+                api_key=api_key
+            )
+
+
+            # =================================================
+            # ANALIZAR IMAGEN
+            # =================================================
 
             response = client.responses.create(
 
                 model="gpt-5.6-luna",
 
                 input=[
-
                     {
-
-                        "role": "user",
+                        "role":
+                            "user",
 
                         "content": [
-
                             {
+                                "type":
+                                    "input_text",
 
-                                "type": "input_text",
-
-                                "text": f"""
-
+                                "text":
+                                    f"""
 Analiza la imagen como un sistema educativo de visión por computadora.
 
 Solicitud del usuario: {prompt}
-
 
 Responde en español y utiliza esta estructura:
 
@@ -342,87 +515,79 @@ Responde en español y utiliza esta estructura:
 
 5. Nivel de certeza: alto, medio o bajo.
 
-
 Si el conteo no puede determinarse con seguridad, indícalo como aproximado.
 
 No inventes objetos que no sean visibles.
-
 """
-
                             },
-
                             {
+                                "type":
+                                    "input_image",
 
-                                "type": "input_image",
+                                "image_url":
+                                    final_image,
 
-                                "image_url": image_data,
-
-                                "detail": "high"
-
+                                "detail":
+                                    "high"
                             }
-
                         ]
-
                     }
-
                 ],
 
                 reasoning={
-
-                    "effort": "none"
-
+                    "effort":
+                        "none"
                 },
 
                 max_output_tokens=700
-
             )
 
+
+            # =================================================
+            # RESPUESTA
+            # =================================================
 
             self.send_json(
-
                 200,
-
                 {
-
-                    "analysis": response.output_text
-
+                    "analysis":
+                        response.output_text
                 }
-
             )
 
+
+        # =====================================================
+        # JSON INVÁLIDO
+        # =====================================================
 
         except json.JSONDecodeError:
 
             self.send_json(
-
                 400,
-
-                {"error": "El cuerpo no contiene JSON válido."}
-
+                {
+                    "error":
+                        "El cuerpo no contiene JSON válido."
+                }
             )
 
+
+        # =====================================================
+        # ERROR GENERAL
+        # =====================================================
 
         except Exception as error:
 
             print(
-
                 f"Error en /api/analyze: "
-
-                f"{type(error).__name__}: {error}"
-
+                f"{type(error).__name__}: "
+                f"{error}"
             )
 
 
             self.send_json(
-
                 500,
-
                 {
-
                     "error":
-
                         "No fue posible analizar la imagen."
-
                 }
-
             )

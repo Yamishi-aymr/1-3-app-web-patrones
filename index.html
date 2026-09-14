@@ -1,9 +1,7 @@
 <!DOCTYPE html>
-
 <html lang="es">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,28 +9,27 @@
     <title>Identificador de patrones con IA</title>
 
     <link rel="stylesheet" href="assets/css/styles.css">
-
 </head>
 
 <body>
-
 
     <main class="app">
 
         <header class="header">
 
             <div>
-
                 <h1>Analizador visual IA</h1>
 
-                <p>Identificación de patrones y objetos en imágenes</p>
-
+                <p>
+                    Identificación de patrones y objetos en imágenes
+                </p>
             </div>
 
-            <span id="statusText" class="status">● IA disponible</span>
+            <span id="statusText" class="status">
+                ● IA disponible
+            </span>
 
         </header>
-
 
         <form id="analyzeForm" class="content">
 
@@ -40,55 +37,95 @@
 
                 <div class="field">
 
-                    <label for="imageInput">1. Selecciona una imagen</label>
+                    <label for="imageInput">
+                        1. Selecciona una imagen
+                    </label>
 
-                    <input id="imageInput" type="file" accept="image/jpeg,image/png,image/webp" required>
+                    <input id="imageInput" type="file" accept="image/jpeg,image/png,image/webp">
 
                 </div>
 
+                <div style="
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    margin: 18px 0;
+                    color: #6b7280;
+                    font-size: 13px;
+                ">
 
-                <img id="preview" class="preview" alt="Vista previa de la imagen">
+                    <div style="
+                        height: 1px;
+                        background: #d1d5db;
+                        flex: 1;
+                    "></div>
 
+                    <span>O</span>
+
+                    <div style="
+                        height: 1px;
+                        background: #d1d5db;
+                        flex: 1;
+                    "></div>
+
+                </div>
 
                 <div class="field">
 
-                    <label for="promptInput">2. ¿Qué quieres identificar?</label>
+                    <label for="imageUrl">
+                        Pega la URL de una imagen
+                    </label>
+
+                    <input id="imageUrl" type="url" placeholder="https://ejemplo.com/imagen.jpg" autocomplete="off"
+                        style="
+                            width: 100%;
+                            padding: 12px;
+                            border: 1px solid #d1d5db;
+                            border-radius: 10px;
+                            background: #ffffff;
+                        ">
+
+                </div>
+
+                <img id="preview" class="preview" alt="Vista previa de la imagen">
+
+                <div class="field">
+
+                    <label for="promptInput">
+                        2. ¿Qué quieres identificar?
+                    </label>
 
                     <textarea id="promptInput" maxlength="500"
                         placeholder="Ejemplo: identifica los objetos y estima cuántos hay de cada tipo."></textarea>
 
                 </div>
 
-
                 <button id="analyzeButton" type="submit" disabled>
-
                     Analizar imagen
-
                 </button>
 
             </section>
 
-
             <section class="panel">
 
-                <h2>Resultado del análisis</h2>
+                <h2>
+                    Resultado del análisis
+                </h2>
 
-                <pre id="result" class="result">Selecciona una imagen para comenzar.</pre>
+                <pre id="result" class="result">Selecciona una imagen o pega una URL para comenzar.</pre>
 
             </section>
 
         </form>
 
-
         <p class="note">
-
-            Usa imágenes sin información sensible. El archivo seleccionado se envía al backend para ser analizado por el
-            modelo de IA.
-
+            Usa imágenes sin información sensible.
+            Puedes subir una imagen desde tu dispositivo
+            o proporcionar una URL pública para que el modelo de IA
+            realice el análisis.
         </p>
 
     </main>
-
 
     <script src="assets/js/app.js"></script>
 
